@@ -11,8 +11,10 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "typeRoots": ["./node_modules/@types"],
+    "lib": ["es2017", "dom"],  // Adding 'dom' to avoid type conflicts
     "paths": {
       "@nestjs/common": ["@nestjs/common/"]
-    },
+    }
   }
 }
