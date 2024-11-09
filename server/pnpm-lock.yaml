@@ -35,6 +35,9 @@ importers:
       class-validator:
         specifier: ^0.13.2
         version: 0.13.2
+      combined-stream:
+        specifier: ^1.0.8
+        version: 1.0.8
       ioredis:
         specifier: ^4.28.5
         version: 4.28.5
