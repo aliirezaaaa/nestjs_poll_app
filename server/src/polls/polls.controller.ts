@@ -1,8 +1,8 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { CreatePollDto, JoinPollDto } from './dtos';
-import { PollsService } from 'src/polls/polls.service';
+import { PollsService } from './polls.service';
 import { ControllerAuthGuard } from '../../guards/controller-auth.guard'
-import { RequestWithAuth } from 'src/polls/types';
+import { RequestWithAuth } from './types';
 
 @Controller('polls')
 export class PollsController {
