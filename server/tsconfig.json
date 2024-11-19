@@ -6,15 +6,17 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "typeRoots": ["./node_modules/@types"],
-    "lib": ["es2017", "dom"],  // Adding 'dom' to avoid type conflicts
-    "paths": {
-      "@nestjs/common": ["@nestjs/common/"]
-    }
-  }
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false
+  },
+  "include": ["src/**/*"]
 }

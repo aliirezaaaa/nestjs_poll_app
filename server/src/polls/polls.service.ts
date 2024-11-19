@@ -1,30 +1,82 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { createPollID, createUserID } from 'src/ids';
-import { CreatePollDto } from 'src/polls/dto/create-poll.dto';
-import { JoinPollDto } from 'src/polls/dto/join-poll.dto';
-import { RejoinPollDto } from 'src/polls/dto/re-join-poll.dto';
+import { PollsRepository } from './polls.repository';
+import { CreatePollFields, JoinPollFields, RejoinPollFields } from './types';
 
 @Injectable()
 export class PollsService {
+    private readonly logger = new Logger(PollsService.name);
+    constructor(
+        private readonly pollsRepository: PollsRepository,
+        private readonly jwtService: JwtService,
+    ) { }
+    async createPoll(fields: CreatePollFields) {
+        const pollID = createPollID();
+        const userID = createUserID();
 
-    async createPoll(createPollDto: CreatePollDto) {
-        const userId = createUserID()
-        const pollId = createPollID()
+        const createdPoll = await this.pollsRepository.createPoll({
+            ...fields,
+            pollID,
+            userID,
+        });
+
+        this.logger.debug(
+            `Creating token string for pollID: ${createdPoll.id} and userID: ${userID}`,
+        );
+
+        const signedString = this.jwtService.sign(
+            {
+                pollID: createdPoll.id,
+                name: fields.name,
+            },
+            {
+                subject: userID,
+            },
+        );
 
         return {
-            ...createPollDto,
-            userId,
-            pollId
-        }
+            poll: createdPoll,
+            accessToken: signedString,
+        };
     }
 
-    async joinPoll(joinPollDto: JoinPollDto) {
-        const userId = createUserID()
+    async joinPoll(fields: JoinPollFields) {
+        const userID = createUserID();
 
-        return{...joinPollDto,userId}
+        this.logger.debug(
+            `Fetching poll with ID: ${fields.pollID} for user with ID: ${userID}`,
+        );
+
+        const joinedPoll = await this.pollsRepository.getPoll(fields.pollID);
+
+        this.logger.debug(
+            `Creating token string for pollID: ${joinedPoll.id} and userID: ${userID}`,
+        );
+
+        const signedString = this.jwtService.sign(
+            {
+                pollID: joinedPoll.id,
+                name: fields.name,
+            },
+            {
+                subject: userID,
+            },
+        );
+
+        return {
+            poll: joinedPoll,
+            accessToken: signedString,
+        };
     }
 
-    async reJoinPoll(rejoinPollDto: RejoinPollDto) {
-        return rejoinPollDto
+    async rejoinPoll(fields: RejoinPollFields) {
+        this.logger.debug(
+            `Rejoining poll with ID: ${fields.pollID} for user with ID: ${fields.userID} with name: ${fields.name}`,
+        );
+
+        const joinedPoll = await this.pollsRepository.addParticipant(fields);
+
+        return joinedPoll;
     }
 }
