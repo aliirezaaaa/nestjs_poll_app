@@ -15,6 +15,9 @@
     "paths": {
       "@nestjs/common": [
         "@nestjs/common/"
+      ],
+      "shared/*": [
+        "../shared/*"
       ]
     },
   }
