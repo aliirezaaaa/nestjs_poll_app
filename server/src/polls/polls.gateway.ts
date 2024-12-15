@@ -7,7 +7,7 @@ import { PollsService } from './polls.service';
 })
 export class PollsGateway implements OnGatewayInit {
   private readonly logger = new Logger(PollsGateway.name);
-  constructor(private readonly pollsService: PollsService) { }
+  constructor(private readonly pollsService: PollsService) {}
 
   // Gatewy initialized (provided in module and instantiated)
   afterInit(): void {
