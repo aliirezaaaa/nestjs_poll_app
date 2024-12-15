@@ -1,0 +1,37 @@
+{
+  "name": "ranker-course",
+  "version": "0.0.1",
+  "description": "Make decisions with friends via ranked voting!",
+  "main": "index.js",
+  "scripts": {
+    "client:dev": "pnpm --filter client run dev",
+    "server:dev": "wait-on tcp:6379 && pnpm --filter server run start:dev",
+    "start": "concurrently \"pnpm run server:dev\" \"pnpm run client:dev\"",
+    "storybook": "pnpm --filter client run storybook",
+    "stop": "echo \"No Docker to stop\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JacobSNGoodwin/ranker.git"
+  },
+  "keywords": [
+    "ts",
+    "react",
+    "nestjs",
+    "socketjs"
+  ],
+  "author": "Jacob Goodwin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JacobSNGoodwin/ranker/issues"
+  },
+  "homepage": "https://github.com/JacobSNGoodwin/ranker#readme",
+  "devDependencies": {
+    "@types/webpack": "^5.28.5",
+    "concurrently": "^7.6.0",
+    "prettier": "^2.8.8",
+    "wait-on": "^6.0.1"
+  }
+}
