@@ -29,6 +29,7 @@ export class PollsGateway
 
     this.logger.log(`WS client with id:${client.id} connected!`);
     this.logger.debug(`Number of connected sockets:${sockets.size}`);
+    this.io.emit('hello', `from ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
