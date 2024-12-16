@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { jwtModule, redisModule } from 'src/modules.config';
-import { PollsController } from './polls.contoller';
+import { PollsController } from './polls.controller';
 import { PollsGateway } from './polls.gateway';
 import { PollsRepository } from './polls.repository';
 import { PollsService } from './polls.service';

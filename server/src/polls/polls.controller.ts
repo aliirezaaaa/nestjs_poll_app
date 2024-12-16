@@ -1,17 +1,36 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CreatePollDto, JoinPollDto } from './dtos';
 import { PollsService } from './polls.service';
 import { ControllerAuthGuard } from '../../guards/controller-auth.guard';
 import { RequestWithAuth } from './types';
 
+@UsePipes(new ValidationPipe())
 @Controller('polls')
 export class PollsController {
   constructor(private pollsService: PollsService) {}
 
+  // @Post()
+  // async create(@Body() createPollDto: CreatePollDto) {
+  //   const result = await this.pollsService.createPoll(createPollDto);
+
+  //   return result;
+  // }
   @Post()
   async create(@Body() createPollDto: CreatePollDto) {
-    const result = await this.pollsService.createPoll(createPollDto);
+    console.log(
+      `Received votesPerVoter type: ${typeof createPollDto.votesPerVoter}`,
+    );
+    console.log(`Received votesPerVoter value: ${createPollDto.votesPerVoter}`);
 
+    const result = await this.pollsService.createPoll(createPollDto);
     return result;
   }
 
