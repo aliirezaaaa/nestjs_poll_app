@@ -5,10 +5,13 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  SubscribeMessage,
+  WsException,
 } from '@nestjs/websockets';
 import { PollsService } from './polls.service';
 import { Namespace } from 'socket.io';
 import { SocketWithAuth } from 'src/polls/types';
+import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
 
 @UsePipes(new ValidationPipe())
 @WebSocketGateway({
@@ -45,5 +48,10 @@ export class PollsGateway
     );
     this.logger.log(`WS client with id:${client.id} disconnected!`);
     this.logger.debug(`Number of connected sockets:${sockets.size}`);
+  }
+
+  @SubscribeMessage('test')
+  async test() {
+    throw new WsBadRequestException('invalid emptyb data;)');
   }
 }
