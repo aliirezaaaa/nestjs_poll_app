@@ -1,4 +1,10 @@
-import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+  UseFilters,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import {
   OnGatewayInit,
   WebSocketGateway,
@@ -6,14 +12,14 @@ import {
   OnGatewayDisconnect,
   WebSocketServer,
   SubscribeMessage,
-  WsException,
 } from '@nestjs/websockets';
-import { PollsService } from './polls.service';
 import { Namespace } from 'socket.io';
-import { SocketWithAuth } from 'src/polls/types';
-import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
+import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
+import { PollsService } from './polls.service';
+import { SocketWithAuth } from './types';
 
 @UsePipes(new ValidationPipe())
+@UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({
   namespace: 'polls',
 })
@@ -22,9 +28,10 @@ export class PollsGateway
 {
   private readonly logger = new Logger(PollsGateway.name);
   constructor(private readonly pollsService: PollsService) {}
+
   @WebSocketServer() io: Namespace;
 
-  // Gatewy initialized (provided in module and instantiated)
+  // Gateway initialized (provided in module and instantiated)
   afterInit(): void {
     this.logger.log(`Websocket Gateway initialized.`);
   }
@@ -33,10 +40,12 @@ export class PollsGateway
     const sockets = this.io.sockets;
 
     this.logger.debug(
-      `Socket connected with userID: ${client.userID}, PollID:${client.pollID}, name:${client.name}`,
+      `Socket connected with userID: ${client.userID}, pollID: ${client.pollID}, and name: "${client.name}"`,
     );
-    this.logger.log(`WS client with id:${client.id} connected!`);
-    this.logger.debug(`Number of connected sockets:${sockets.size}`);
+
+    this.logger.log(`WS Client with id: ${client.id} connected!`);
+    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+
     this.io.emit('hello', `from ${client.id}`);
   }
 
@@ -44,14 +53,15 @@ export class PollsGateway
     const sockets = this.io.sockets;
 
     this.logger.debug(
-      `Socket Disconnected with userID: ${client.userID}, PollID:${client.pollID}, name:${client.name}`,
+      `Socket connected with userID: ${client.userID}, pollID: ${client.pollID}, and name: "${client.name}"`,
     );
-    this.logger.log(`WS client with id:${client.id} disconnected!`);
-    this.logger.debug(`Number of connected sockets:${sockets.size}`);
+
+    this.logger.log(`Disconnected socket id: ${client.id}`);
+    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
   }
 
   @SubscribeMessage('test')
   async test() {
-    throw new WsBadRequestException('invalid emptyb data;)');
+    throw new BadRequestException('plain ol');
   }
 }
