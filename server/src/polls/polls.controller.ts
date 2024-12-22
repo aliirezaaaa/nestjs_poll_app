@@ -17,20 +17,10 @@ import { RequestWithAuth } from './types';
 export class PollsController {
   constructor(private pollsService: PollsService) {}
 
-  // @Post()
-  // async create(@Body() createPollDto: CreatePollDto) {
-  //   const result = await this.pollsService.createPoll(createPollDto);
-
-  //   return result;
-  // }
   @Post()
   async create(@Body() createPollDto: CreatePollDto) {
-    console.log(
-      `Received votesPerVoter type: ${typeof createPollDto.votesPerVoter}`,
-    );
-    console.log(`Received votesPerVoter value: ${createPollDto.votesPerVoter}`);
-
     const result = await this.pollsService.createPoll(createPollDto);
+
     return result;
   }
 
