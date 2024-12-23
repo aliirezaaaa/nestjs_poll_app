@@ -1,5 +1,5 @@
+/* eslint-disable prettier/prettier */
 import {
-  BadRequestException,
   Logger,
   UseFilters,
   UseGuards,
@@ -21,6 +21,7 @@ import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { PollsService } from './polls.service';
 import { SocketWithAuth } from './types';
 import { GatewayAdminGuard } from 'src/polls/gateWay-admin.guard';
+import { NominationDto } from 'src/polls/dtos';
 
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsCatchAllFilter())
@@ -28,10 +29,9 @@ import { GatewayAdminGuard } from 'src/polls/gateWay-admin.guard';
   namespace: 'polls',
 })
 export class PollsGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(PollsGateway.name);
-  constructor(private readonly pollsService: PollsService) {}
+  constructor(private readonly pollsService: PollsService) { }
 
   @WebSocketServer() io: Namespace;
 
@@ -113,5 +113,40 @@ export class PollsGateway
     if (updatedPoll) {
       this.io.to(client.pollID).emit('Updated_Poll', updatedPoll);
     }
+  }
+  @SubscribeMessage('nominate')
+  async nominate(
+    @MessageBody() nomination: NominationDto,
+    @ConnectedSocket() client: SocketWithAuth,
+  ): Promise<void> {
+    this.logger.debug(
+      `Attempting to add nomination for user ${client.userID} to poll ${client.pollID}\n${nomination.text}`,
+    );
+
+    const updatedPoll = await this.pollsService.addNomination({
+      pollID: client.pollID,
+      userID: client.userID,
+      text: nomination.text,
+    });
+
+    this.io.to(client.pollID).emit('Updated_Poll', updatedPoll);
+  }
+
+  @UseGuards(GatewayAdminGuard)
+  @SubscribeMessage('remove_nomination')
+  async removeNomination(
+    @MessageBody('id') nominationID: string,
+    @ConnectedSocket() client: SocketWithAuth,
+  ): Promise<void> {
+    this.logger.debug(
+      `Attempting to remove nomination ${nominationID} from poll ${client.pollID}`,
+    );
+
+    const updatedPoll = await this.pollsService.removeNomination(
+      client.pollID,
+      nominationID,
+    );
+
+    this.io.to(client.pollID).emit('Updated_Poll', updatedPoll);
   }
 }

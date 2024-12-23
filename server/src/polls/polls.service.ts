@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { createPollID, createUserID } from 'src/ids';
+import { createPollID, createUserID, createNominationID } from 'src/ids';
 import { PollsRepository } from './polls.repository';
 import {
+  AddNominationFields,
   addParticipantFields,
   CreatePollFields,
   JoinPollFields,
@@ -16,7 +18,7 @@ export class PollsService {
   constructor(
     private readonly pollsRepository: PollsRepository,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
   async createPoll(fields: CreatePollFields) {
     const pollID = createPollID();
     const userID = createUserID();
@@ -107,5 +109,24 @@ export class PollsService {
 
   async getPoll(pollID: string): Promise<Poll> {
     return this.pollsRepository.getPoll(pollID);
+  }
+
+  async addNomination({
+    pollID,
+    userID,
+    text,
+  }: AddNominationFields): Promise<Poll> {
+    return this.pollsRepository.addNomination({
+      pollID,
+      nominationID: createNominationID(),
+      nomination: {
+        userID,
+        text,
+      },
+    });
+  }
+
+  async removeNomination(pollID: string, nominationID: string): Promise<Poll> {
+    return this.pollsRepository.removeNomination(pollID, nominationID);
   }
 }
