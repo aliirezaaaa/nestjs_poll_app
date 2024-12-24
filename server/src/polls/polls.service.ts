@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { createPollID, createUserID, createNominationID } from 'src/ids';
 import { PollsRepository } from './polls.repository';
@@ -9,6 +9,7 @@ import {
   CreatePollFields,
   JoinPollFields,
   RejoinPollFields,
+  SubmitRankingFields,
 } from './types';
 import { Poll } from 'shared/poll-types';
 
@@ -128,5 +129,18 @@ export class PollsService {
 
   async removeNomination(pollID: string, nominationID: string): Promise<Poll> {
     return this.pollsRepository.removeNomination(pollID, nominationID);
+  }
+
+  async startPoll(pollID: string): Promise<Poll> {
+    return this.pollsRepository.startPoll(pollID)
+  }
+
+  async submitRankings(rankingsData: SubmitRankingFields): Promise<Poll> {
+    const hasPollStarted = this.pollsRepository.getPoll(rankingsData.pollID)
+
+    if (!hasPollStarted) {
+      throw new BadRequestException(`Participants can't rank until the poll has started! `)
+    }
+    return this.pollsRepository.addParticipantRankings(rankingsData)
   }
 }
