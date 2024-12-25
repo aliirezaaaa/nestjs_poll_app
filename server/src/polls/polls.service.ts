@@ -12,6 +12,7 @@ import {
   SubmitRankingFields,
 } from './types';
 import { Poll } from 'shared/poll-types';
+import getResults from 'src/polls/getResults';
 
 @Injectable()
 export class PollsService {
@@ -142,5 +143,15 @@ export class PollsService {
       throw new BadRequestException(`Participants can't rank until the poll has started! `)
     }
     return this.pollsRepository.addParticipantRankings(rankingsData)
+  }
+
+  async computeResults(pollID: string): Promise<Poll> {
+    const poll = await this.pollsRepository.getPoll(pollID)
+    const results = getResults(poll.rankings, poll.nominations, poll.votesPerVoter)
+    return this.pollsRepository.addResults(pollID, results)
+  }
+
+  async cancelPoll(pollID: string): Promise<void> {
+    return this.pollsRepository.deletePoll(pollID)
   }
 }
