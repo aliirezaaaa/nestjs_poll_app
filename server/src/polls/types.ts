@@ -9,30 +9,28 @@ export type CreatePollFields = {
   name: string;
 };
 
-export type JoinPollFields = {
+export type GetJoinPollTokenFields = {
   pollID: string;
   name: string;
 };
 
-export type RejoinPollFields = {
-  pollID: string;
-  userID: string;
-  name: string;
-};
 export type addParticipantFields = {
   pollID: string;
   userID: string;
   name: string;
 };
+
 export type RemoveParticipantFields = {
   poolID: string;
   userID: string;
 };
+
 export type AddNominationFields = {
   pollID: string;
   userID: string;
   text: string;
 };
+
 export type SubmitRankingFields = {
   pollID: string;
   userID: string;

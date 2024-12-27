@@ -15,7 +15,7 @@ export class CreatePollDto {
   name: string;
 }
 
-export class JoinPollDto {
+export class GetJoinPollToken {
   @IsString()
   @Length(6, 6)
   pollID: string;

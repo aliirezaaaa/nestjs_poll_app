@@ -7,8 +7,7 @@ import {
   AddNominationFields,
   addParticipantFields,
   CreatePollFields,
-  JoinPollFields,
-  RejoinPollFields,
+  GetJoinPollTokenFields,
   SubmitRankingFields,
 } from './types';
 import { Poll } from 'shared/poll-types';
@@ -51,7 +50,7 @@ export class PollsService {
     };
   }
 
-  async joinPoll(fields: JoinPollFields) {
+  async getJoinPollToken(fields: GetJoinPollTokenFields) {
     const userID = createUserID();
 
     this.logger.debug(
@@ -78,16 +77,6 @@ export class PollsService {
       poll: joinedPoll,
       accessToken: signedString,
     };
-  }
-
-  async rejoinPoll(fields: RejoinPollFields) {
-    this.logger.debug(
-      `Rejoining poll with ID: ${fields.pollID} for user with ID: ${fields.userID} with name: ${fields.name}`,
-    );
-
-    const joinedPoll = await this.pollsRepository.addParticipant(fields);
-
-    return joinedPoll;
   }
 
   async addParticipant(addParticipant: addParticipantFields): Promise<Poll> {
