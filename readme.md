@@ -1,3 +1,4 @@
+## My name is alireza khorramshekooh and I have been started learning nestjs recently. I watched a tutorial about a poll project with nestjs from JacobSNGoodwin and this is the information about his repository. I have some minor changes in my project as my first nestjs project sample but you can find the original project by following links. 
 ## Ranker Course
 
 This repo holds the project code for my [Ranker Youtube tutorial](https://youtube.com/playlist?list=PLnrGn4P6C4P5J2rSSyiAyxZegws4SS8ey) on building a real-time, websocket-based (add another hyphenated-term as you please) ranked-choice voting app!
