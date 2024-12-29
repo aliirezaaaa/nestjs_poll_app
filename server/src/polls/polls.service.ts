@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { createPollID, createUserID, createNominationID } from 'src/ids';
+import { createPollID, createUserID, createNominationID } from '../ids';
 import { PollsRepository } from './polls.repository';
 import {
   AddNominationFields,
@@ -11,7 +11,7 @@ import {
   SubmitRankingFields,
 } from './types';
 import { Poll } from 'shared/poll-types';
-import getResults from 'src/polls/getResults';
+import getResults from '../polls/getResults';
 
 @Injectable()
 export class PollsService {
