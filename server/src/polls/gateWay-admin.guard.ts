@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   CanActivate,
   ExecutionContext,
@@ -5,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { WsUnauthorizedException } from 'src/exceptions/ws-exceptions';
+import { WsUnauthorizedException } from '../exceptions/ws-exceptions';
 import { PollsService } from './polls.service';
 import { AuthPayload, SocketWithAuth } from './types';
 
@@ -15,7 +16,7 @@ export class GatewayAdminGuard implements CanActivate {
   constructor(
     private readonly pollsService: PollsService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // regular `Socket` from socket.io is probably sufficient
     const socket: SocketWithAuth = context.switchToWs().getClient();
